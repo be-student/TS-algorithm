@@ -172,11 +172,11 @@
 //     [P in keyof T]?: T[P];
 //     //newMember: boolean;
 //   }
-interface func {
-  get(animal: number): number;
-}
-class ani implements func {
-  get(animal: number): number {
-    return animal;
-  }
-}
+// interface func {
+//   get(animal: number): number;
+// }
+// class ani implements func {
+//   get(animal: number): number {
+//     return animal;
+//   }
+// }
