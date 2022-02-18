@@ -9,38 +9,16 @@
 //   price = 1;
 // }
 // const temp1 = new first();
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        if (typeof b !== "function" && b !== null)
-            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 // function nd(param: any): any {
 //   console.log(param);
 //   return function (target: any, name: any): any {
@@ -122,52 +100,120 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 //   }
 // }
 // console.log(new Greeter("world"));
-var dependencyPool = {
-    dep1: { name: "dep1" },
-    dep2: { name: "dep2" },
-    dep3: { name: "dep3" },
-    dep4: { name: "dep4" },
-};
-var a = "hello world";
-function inject() {
-    var depNames = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        depNames[_i] = arguments[_i];
-    }
-    return function (constructor) {
-        return /** @class */ (function (_super) {
-            __extends(class_1, _super);
-            function class_1() {
-                var args = [];
-                for (var _i = 0; _i < arguments.length; _i++) {
-                    args[_i] = arguments[_i];
-                }
-                var _this = this;
-                var deps = depNames.reduce(function (deps, name) {
-                    var _a;
-                    return (__assign(__assign({}, deps), (_a = {}, _a[name] = dependencyPool[name], _a)));
-                }, {});
-                _this = _super.call(this, deps) || this;
-                return _this;
-            }
-            return class_1;
-        }(constructor));
+// const dependencyPool = {
+//   dep1: { name: "dep1" },
+//   dep2: { name: "dep2" },
+//   dep3: { name: "dep3" },
+//   dep4: { name: "dep4" },
+// };
+// type testing = "dep1" | "dep2" | "dep3" | "dep4";
+// // interface testing {
+// //   name: "dep1" | "dep2" | "dep3" | "dep4";
+// // }
+// console.log({ ...dependencyPool });
+// function inject(...depNames: testing[]) {
+//   return function <T extends { new (...args: any[]): {} }>(constructor: T) {
+//     return class extends constructor {
+//       constructor(...args: any[]) {
+//         const deps = depNames.reduce(
+//           (deps, name) => ({
+//             ...deps,
+//             [name]: dependencyPool[name],
+//           }),
+//           {}
+//         );
+//         super(deps);
+//       }
+//     };
+//   };
+// }
+// @inject("dep1", "dep2")
+// class Product {
+//   constructor(deps: any) {
+//     console.log("product depencency is\n", deps);
+//   }
+// }
+// function createProduct(...args: any[]) {
+//   return new Product(args);
+// }
+// const p = createProduct();
+// class Product {
+//   setPrice() {
+//     console.log("setPrice");
+//   }
+// }
+// const descriptor = Object.getOwnPropertyDescriptor(
+//   Product.prototype,
+//   "setPrice"
+// );
+// console.log(descriptor);
+// // {value: ƒ, writable: true, enumerable: false, configurable: true}
+// console.log(descriptor.value === Product.prototype.setPrice);
+// // true
+// function logging(target: any, name: any, descriptor: any) {
+//   console.log(target, name);
+//   console.log(descriptor);
+//   const originMethod = descriptor.value;
+//   descriptor.value = function (...args: any[]) {
+//     const res = originMethod.apply(this, args);
+//     console.log(this);
+//     console.log(`${name} method arguments: `, args);
+//     console.log(`${name} method return: `, res);
+//     return res;
+//   };
+// }
+// class Product {
+//   price: number = 1000;
+//   @logging
+//   setPrice(p: number) {
+//     this.price = p;
+//     console.log(this.price);
+//     return this.price;
+//   }
+// }
+// const p = new Product();
+// p.setPrice(1000);
+// p.setPrice(2000);
+function minNumber(min) {
+    return function decorator(target, name, index) {
+        console.log(target);
+        console.log(name);
+        target.validators = {
+            minNumber: function (args) {
+                return args[index] >= min;
+            },
+        };
     };
 }
-var Product = /** @class */ (function () {
-    function Product(deps) {
-        console.log("product depencency is", deps);
-    }
-    Product = __decorate([
-        inject("dep1", "dep2")
-    ], Product);
-    return Product;
-}());
-function createProduct() {
-    var args = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        args[_i] = arguments[_i];
-    }
-    return new Product(args);
+function validate(target, name, descriptor) {
+    console.log(descriptor);
+    const originMethod = target[name];
+    descriptor.value = function (...args) {
+        Object.keys(target.validators).forEach((key) => {
+            console.log(key);
+            if (!target.validators[key](args)) {
+                throw new Error("Not Valid!");
+            }
+        });
+        originMethod.apply(this, args);
+    };
 }
-var p = createProduct();
+class Product {
+    constructor(name, price) {
+        this.purchased = 0;
+        this.name = name;
+        this.price = price;
+    }
+    setPrice(price) {
+        this.price = price;
+    }
+}
+__decorate([
+    validate,
+    __param(0, minNumber(2000))
+], Product.prototype, "setPrice", null);
+const p1 = new Product("foo", 2000);
+p1.setPrice(2000);
+p1.setPrice(2001);
+//p1.setPrice(1000);
+// Uncaught Error: Not Valid!
